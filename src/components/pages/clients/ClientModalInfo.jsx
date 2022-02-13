@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -20,21 +20,19 @@ const style = {
   p: 4,
 };
 
-export default function ClientModalInfo(props) {
+function ClientModalInfo(props) {
   const {
     open, editedItem, handleClose, setChengetData, setAddNewClient,
   } = props;
 
-  const [valueName, setValueName] = React.useState('');
-  const [valuePhone, setValuePhone] = React.useState('');
-  const [valueEmail, setValueEmail] = React.useState('');
+  const [valueName, setValueName] = useState('');
+  const [valuePhone, setValuePhone] = useState('');
+  const [valueEmail, setValueEmail] = useState('');
 
-  React.useEffect(() => {
-    if (editedItem) {
-      setValueName(editedItem.name);
-      setValuePhone(editedItem.phone);
-      setValueEmail(editedItem.email);
-    }
+  useEffect(() => {
+    setValueName(editedItem ? editedItem.name : null);
+    setValuePhone(editedItem ? editedItem.phone : null);
+    setValueEmail(editedItem ? editedItem.email : null);
   }, [editedItem]);
 
   const handleChange = (event) => {
@@ -92,7 +90,7 @@ export default function ClientModalInfo(props) {
         <Box sx={style}>
           <Grid container spacing={2} sx={{ padding: '14px 0' }} justifyContent="center" alignItems="center">
             <Typography variant="body1" color="text.secondary">
-              { titleText}
+              {titleText}
             </Typography>
           </Grid>
           <TextField
@@ -144,3 +142,5 @@ export default function ClientModalInfo(props) {
     </Modal>
   );
 }
+
+export default memo(ClientModalInfo);

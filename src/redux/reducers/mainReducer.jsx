@@ -1,5 +1,3 @@
-import apiAddress from '../../api/apiAddress';
-
 const initialState = {
 
   street: {
@@ -88,34 +86,7 @@ export const actions = {
   setHouseLoadStatus: (payload) => ({ type: 'SET_HOUSE_LOAD_STATUS', payload }),
   setSelectedFlat: (payload) => ({ type: 'SET_SELECTED_FLAT', payload }),
   setSelectedHouse: (payload) => ({ type: 'SET_SELECTED_HOUSE', payload }),
-};
-
-export const getStreetsListTc = () => (dispatch) => {
-  dispatch(actions.setLoadStatus(true));
-  apiAddress.getStreets().then((response) => {
-    dispatch(actions.setstreetsList(response));
-    dispatch(actions.setLoadStatus(false));
-  });
-};
-export const getHouseTc = (value) => (dispatch) => {
-  if (value) {
-    dispatch(actions.setSelectedStreet(value));
-    dispatch(actions.setHouseLoadStatus(true));
-    apiAddress.getHouseById(value.id).then((response) => {
-      dispatch(actions.setHouseList(response));
-      dispatch(actions.setHouseLoadStatus(false));
-    });
-  }
-};
-export const getFlatsTc = (value) => (dispatch) => {
-  if (value) {
-    dispatch(actions.setSelectedHouse(value));
-    dispatch(actions.setFlatsLoadStatus(true));
-    apiAddress.getFlatsById(value.id).then((response) => {
-      dispatch(actions.setFlatsList(response));
-      dispatch(actions.setFlatsLoadStatus(false));
-    });
-  }
+  setFlatsLoadStatus: (payload) => ({ type: 'SET_FLATS_LOAD_STATUS', payload }),
 };
 
 export default mainReducer;

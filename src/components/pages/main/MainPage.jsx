@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
@@ -7,14 +7,15 @@ import { green } from '@mui/material/colors';
 import Tooltip from '@mui/material/Tooltip';
 import {
   getClientByFlatsIdTc, updateClientDataTc, addClientDataTc, deleteClientListTc,
-} from '../../../redux/reducers/clientReducer';
+} from '../../../redux/thuncks/clientThuncks';
 import {
-  getStreetsListTc, getHouseTc, getFlatsTc,
-} from '../../../redux/reducers/mainReducer';
+  getStreetsListTc, getHouseTc, getFlatsTc, deleteSelectedHouseTc, deleteSelectedFlatsTc,
+  deleteSelectedStreetTc,
+} from '../../../redux/thuncks/mainThuncks';
 import {
   getstreetsList, getLoadingStretsListStatus, getStreetstreetInputOption,
   getHouseList, getLoadingHouseListStatus, getHouseInputOption, getFlatsList,
-  getLoadingFlatsListStatus, getFlatsInputOption, getClientReqId,
+  getLoadingFlatsListStatus, getFlatsInputOption,
   getSelectedHouse, getSelectedStreet, getSelectedFlat,
 } from '../../../selectors';
 import CustomField from '../../pageComponents/customField/CustomField';
@@ -26,12 +27,12 @@ function MainPage() {
   const [editedItem, seteditedItem] = React.useState(null);
 
   const dispatch = useDispatch();
-  const reqId = useSelector(getClientReqId);
 
   const streetsList = useSelector(getstreetsList);
   const isStreatListStatus = useSelector(getLoadingStretsListStatus);
   const streetOptions = useSelector(getStreetstreetInputOption);
   const selectedStreet = useSelector(getSelectedStreet);
+
   const houseList = useSelector(getHouseList);
   const isHouseListStatus = useSelector(getLoadingHouseListStatus);
   const houseOptions = useSelector(getHouseInputOption);
@@ -42,13 +43,8 @@ function MainPage() {
   const flatsOptions = useSelector(getFlatsInputOption);
   const selectedFlat = useSelector(getSelectedFlat);
 
-  const getData = (fieldName) => {
-    switch (fieldName) {
-      case 'street':
-        dispatch(getStreetsListTc());
-        break;
-      default:
-    }
+  const getData = () => {
+    dispatch(getStreetsListTc());
   };
 
   const setData = (value, fieldName) => {
@@ -66,15 +62,35 @@ function MainPage() {
     }
   };
 
-  const handleClose = () => setOpen(false);
+  const deleteselectedValue = (fildName) => {
+    switch (fildName) {
+      case 'street':
+        dispatch(deleteSelectedStreetTc());
+        dispatch(deleteClientListTc());
+        break;
+      case 'house':
+        dispatch(deleteSelectedHouseTc());
+        dispatch(deleteClientListTc());
+        break;
+      case 'flats':
+        dispatch(deleteSelectedFlatsTc());
+        dispatch(deleteClientListTc());
+        break;
+      default:
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const setChengetData = (data) => {
-    dispatch(updateClientDataTc(data, reqId));
+    dispatch(updateClientDataTc(data, selectedFlat));
     setOpen(false);
   };
 
   const setAddNewClient = (data) => {
-    dispatch(addClientDataTc(data, reqId));
+    dispatch(addClientDataTc(data, selectedFlat));
     setOpen(false);
   };
 
@@ -90,9 +106,9 @@ function MainPage() {
     <Grid container spacing={2} sx={{ padding: '14px 0' }} justifyContent="center" flexDirection="column" alignItems="center">
       <Grid item>
         <Grid container>
-          <CustomField label="Улица" list={streetsList} status={isStreatListStatus} options={streetOptions} getData={getData} addSelectedValue={setData} />
-          <CustomField label="Дом" list={houseList} status={isHouseListStatus} options={houseOptions} getData={getData} addSelectedValue={setData} />
-          <CustomField label="Квартира" list={flatsList} status={isFlatsListStatus} options={flatsOptions} getData={getData} addSelectedValue={setData} />
+          <CustomField label="Улица" list={streetsList} status={isStreatListStatus} options={streetOptions} seteditedItem={seteditedItem} getData={getData} addSelectedValue={setData} deleteselectedValue={deleteselectedValue} />
+          <CustomField label="Дом" list={houseList} status={isHouseListStatus} options={houseOptions} seteditedItem={seteditedItem} addSelectedValue={setData} deleteselectedValue={deleteselectedValue} />
+          <CustomField label="Квартира" list={flatsList} status={isFlatsListStatus} options={flatsOptions} seteditedItem={seteditedItem} addSelectedValue={setData} deleteselectedValue={deleteselectedValue} />
         </Grid>
         <Grid item>
           <Grid>
@@ -100,9 +116,18 @@ function MainPage() {
           </Grid>
           <Grid container justifyContent="flex-end">
             <Tooltip title="Добавить жильца">
-              <IconButton disabled={!flat.length} sx={{ color: green[500] }}>
-                <AddIcon onClick={() => setOpen(true)} />
-              </IconButton>
+              <span>
+                <IconButton
+                  disabled={!flat.length}
+                  sx={{ color: green[500] }}
+                  onClick={() => {
+                    seteditedItem(null);
+                    setOpen(true);
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
+              </span>
             </Tooltip>
           </Grid>
         </Grid>
@@ -111,6 +136,7 @@ function MainPage() {
       <ClientModalInfo
         open={open}
         handleClose={handleClose}
+        seteditedItem={seteditedItem}
         editedItem={editedItem}
         setChengetData={setChengetData}
         setAddNewClient={setAddNewClient}
@@ -119,4 +145,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default memo(MainPage);

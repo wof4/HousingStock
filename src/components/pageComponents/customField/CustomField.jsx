@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export default function CustomField(props) {
+function CustomField(props) {
   const {
-    list, status, getData, addSelectedValue, options,
+    list, status, getData, addSelectedValue, options, deleteselectedValue,
   } = props;
   const [open, setOpen] = React.useState(false);
   const [select, setSelect] = React.useState(null);
@@ -13,19 +13,19 @@ export default function CustomField(props) {
 
   const loading = open && status;
 
-  React.useEffect(() => {
-    if (!list.length && !status) {
-      getData(options.name);
+  useEffect(() => {
+    if (!list.length && !status && options.name === 'street') {
+      getData();
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (select) {
       addSelectedValue(select, options.name);
     }
   }, [select]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setInputValue('');
     setSelect(null);
   }, [list]);
@@ -38,6 +38,9 @@ export default function CustomField(props) {
       }}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => {
+        if (newInputValue === '') {
+          deleteselectedValue(options.name);
+        }
         setInputValue(newInputValue);
       }}
       getOptionLabel={(option) => option.name}
@@ -72,3 +75,5 @@ export default function CustomField(props) {
     />
   );
 }
+
+export default memo(CustomField);

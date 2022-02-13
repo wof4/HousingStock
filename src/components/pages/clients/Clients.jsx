@@ -2,23 +2,24 @@ import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 
-import { getClientList, getClientReqId } from '../../../selectors';
-import { deleteClientTc } from '../../../redux/reducers/clientReducer';
+import { getClientList, getSelectedFlat } from '../../../selectors';
+import { deleteClientTc } from '../../../redux/thuncks/clientThuncks';
 import Client from './Client';
 
 function Clients(props) {
+  const { seteditedItem, setOpen } = props;
   const dispatch = useDispatch();
 
   const clientList = useSelector(getClientList);
-  const reqId = useSelector(getClientReqId);
+  const selectedFlat = useSelector(getSelectedFlat);
 
   const editClient = (client) => {
-    props.seteditedItem(client);
-    props.setOpen(true);
+    seteditedItem(client);
+    setOpen(true);
   };
 
   const deliteClient = (value) => {
-    dispatch(deleteClientTc(value, reqId));
+    dispatch(deleteClientTc(value, selectedFlat));
   };
 
   return (

@@ -15,4 +15,3 @@ export const getFlatsInputOption = (state) => state.mainReducer.flats.flatsInput
 export const getSelectedFlat = (state) => state.mainReducer.flats.selectedFlat;
 
 export const getClientList = (state) => state.clientReducer.client.clientList;
-export const getClientReqId = (state) => state.clientReducer.client.reqDataId;

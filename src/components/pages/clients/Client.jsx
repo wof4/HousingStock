@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { memo } from 'react';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
 import Card from '@mui/material/Card';
@@ -40,18 +40,22 @@ function Client(props) {
       </CardContent>
       <CardActions sx={{ justifyContent: 'space-between' }}>
         <Tooltip title="Удалить">
-          <IconButton>
-            <DeleteForeverIcon onClick={() => deliteClient(client.bindId)} />
-          </IconButton>
+          <span>
+            <IconButton>
+              <DeleteForeverIcon onClick={() => deliteClient(client.bindId)} />
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Редактировать">
-          <IconButton>
-            <EditIcon onClick={() => editClient(client)} />
-          </IconButton>
+          <span>
+            <IconButton>
+              <EditIcon onClick={() => editClient(client)} />
+            </IconButton>
+          </span>
         </Tooltip>
       </CardActions>
     </Card>
   );
 }
 
-export default Client;
+export default memo(Client);
